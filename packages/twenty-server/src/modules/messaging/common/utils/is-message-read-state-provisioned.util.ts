@@ -8,7 +8,7 @@ const IS_READ_FIELD_UNIVERSAL_IDENTIFIER =
   STANDARD_OBJECTS.messageChannelMessageAssociation.fields.isRead
     .universalIdentifier;
 
-// Fence until upgrade:2-59:add-message-channel-message-association-is-read-field has reached every workspace
+// Fence until upgrade:2-60:add-message-channel-message-association-is-read-field has reached every workspace
 export const isMessageReadStateProvisioned = (
   flatFieldMetadataMaps: Pick<
     FlatEntityMaps<FlatFieldMetadata>,

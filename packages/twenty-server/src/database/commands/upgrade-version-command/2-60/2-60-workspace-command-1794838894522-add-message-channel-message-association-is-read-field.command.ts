@@ -17,9 +17,9 @@ import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspa
 const MESSAGE_CHANNEL_MESSAGE_ASSOCIATION =
   STANDARD_OBJECTS.messageChannelMessageAssociation;
 
-@RegisteredWorkspaceCommand('2.59.0', 1794824373277)
+@RegisteredWorkspaceCommand('2.60.0', 1794838894522)
 @Command({
-  name: 'upgrade:2-59:add-message-channel-message-association-is-read-field',
+  name: 'upgrade:2-60:add-message-channel-message-association-is-read-field',
   description:
     'Add the isRead field to messageChannelMessageAssociation so channels can carry per-owner read state',
 })
