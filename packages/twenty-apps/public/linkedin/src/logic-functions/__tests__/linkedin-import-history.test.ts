@@ -154,10 +154,7 @@ describe('linkedinImportHistoryHandler', () => {
       importedConversationCount: 1,
     });
 
-    expect(mocks.getUnipileChat).toHaveBeenCalledExactlyOnceWith({
-      accountId: 'acc_1',
-      chatId: 'chat-2',
-    });
+    expect(mocks.getUnipileChat).toHaveBeenCalledTimes(2);
     expect(mocks.refreshLinkedinChatReadState).toHaveBeenCalledExactlyOnceWith({
       unipileAccountId: 'acc_1',
       messageChannelId: 'channel-id',
@@ -166,7 +163,7 @@ describe('linkedinImportHistoryHandler', () => {
     expect(mocks.ingestLinkedinMessages).toHaveBeenCalledWith(
       expect.objectContaining({
         unipileAccountId: 'acc_1',
-        counterparts: [LISTED_CHAT_WITH_ATTENDEE.user],
+        counterparts: [{ id: 'user-chat-1', public_identifier: 'chat-1' }],
       }),
     );
     expect(
@@ -186,6 +183,24 @@ describe('linkedinImportHistoryHandler', () => {
       expect.stringMatching(
         /chunk 2: 2 chats .*1 conversations imported, 12 messages, 1 people matched, 1 people created, 2 attachments, skipped 1 without contact/,
       ),
+    );
+  });
+
+  it('maps messages with the current chat read state, not the planned one', async () => {
+    mocks.kvStore.set(getChatsKey(2), [
+      { ...LISTED_CHAT_WITH_ATTENDEE, unread_count: 0 },
+    ]);
+    mocks.getUnipileChat.mockResolvedValue({
+      ...LISTED_CHAT_WITH_ATTENDEE,
+      unread_count: 1,
+    });
+
+    await linkedinImportHistoryHandler(PAYLOAD);
+
+    expect(mocks.ingestLinkedinMessages).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        chat: expect.objectContaining({ unread_count: 1 }),
+      }),
     );
   });
 
@@ -376,10 +391,9 @@ describe('linkedinImportHistoryHandler', () => {
   });
 
   it('stores the error of a page Twenty will not retry', async () => {
-    mocks.getUnipileChat.mockRejectedValue({
-      status: 400,
-      title: 'Invalid querystring',
-    });
+    mocks.getUnipileChat
+      .mockResolvedValueOnce(LISTED_CHAT_WITH_ATTENDEE)
+      .mockRejectedValue({ status: 400, title: 'Invalid querystring' });
 
     await expect(
       linkedinImportHistoryHandler(PAYLOAD, { retryCount: 0, maxRetries: 3 }),

@@ -200,13 +200,10 @@ export const linkedinImportHistoryHandler = async (
     settings: LinkedinSettings;
     resolveCounterpart: LinkedinCounterpartResolver;
   }): Promise<void> => {
-    const chat =
-      getLinkedinChatCounterparts(listedChat).length > 0
-        ? listedChat
-        : await getUnipileChat({
-            accountId: unipileAccountId,
-            chatId: listedChat.id,
-          });
+    const chat = await getUnipileChat({
+      accountId: unipileAccountId,
+      chatId: listedChat.id,
+    });
     const counterparts = getLinkedinChatCounterparts(chat);
     const seenCursors = new Set<string>();
 
