@@ -851,7 +851,7 @@ export class ApplicationMessageSendService {
             .getRepository<PersonWorkspaceEntity>('person')
             .findOne({
               where: { id: personId },
-              select: { id: true, name: true },
+              select: { id: true, nameFirstName: true, nameLastName: true },
             }),
         callerAuthContext,
       );
