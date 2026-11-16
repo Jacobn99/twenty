@@ -94,7 +94,7 @@ describe('linkedinStartConversationHandler', () => {
     });
 
     expect(mocks.getPersonLinkedinLink).not.toHaveBeenCalled();
-    expect(mocks.getUnipileUser).toHaveBeenCalledWith(
+    expect(mocks.getUnipileUser).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({ userId: 'grace-hopper' }),
     );
   });
@@ -115,7 +115,7 @@ describe('linkedinStartConversationHandler', () => {
     expect(mocks.getPersonLinkedinLink).toHaveBeenCalledExactlyOnceWith(
       PERSON_ID,
     );
-    expect(mocks.getUnipileUser).toHaveBeenCalledWith(
+    expect(mocks.getUnipileUser).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({ userId: 'ACoAAA123' }),
     );
   });
