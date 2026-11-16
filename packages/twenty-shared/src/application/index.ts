@@ -105,6 +105,7 @@ export { MINIMUM_UNIVERSAL_IDENTIFIER_UUID_VERSION } from './constants/MinimumUn
 export { NODE_ESM_CJS_BANNER } from './constants/NodeEsmCjsBanner';
 export { OUTPUT_DIR } from './constants/OutputDirectory';
 export { RESERVED_SETTINGS_MENU_ITEM_SLUGS } from './constants/ReservedSettingsMenuItemSlugs';
+export { SETTINGS_APPLICATION_CONNECTIONS_SECTION_ID } from './constants/SettingsApplicationConnectionsSectionId';
 export { SETTINGS_GENERAL_TAB_ID } from './constants/SettingsGeneralTabId';
 export { SETTINGS_MENU_ITEM_SLUG_MAX_LENGTH } from './constants/SettingsMenuItemSlugMaxLength';
 export { SETTINGS_VARIABLES_TAB_ID } from './constants/SettingsVariablesTabId';
@@ -275,6 +276,7 @@ export type {
   RoleManifest,
   LegacyCompliantRoleManifest,
 } from './roleManifestType';
+export { LEGACY_ROLE_RECORDS_PERMISSIONS_MANIFEST_KEYS } from './roleManifestType';
 export type {
   ObjectPermissionGrant,
   FieldPermissionGrant,
@@ -352,6 +354,7 @@ export type {
   FlattenedRowLevelPermissionRuleManifests,
 } from './utils/flattenRowLevelPermissionRuleManifests';
 export { flattenRowLevelPermissionRuleManifests } from './utils/flattenRowLevelPermissionRuleManifests';
+export { getDeclaredLegacyRoleRecordsPermissionsKeys } from './utils/getDeclaredLegacyRoleRecordsPermissionsKeys';
 export type {
   EffectiveObjectPermissions,
   ObjectRecordsPermissionGrants,
