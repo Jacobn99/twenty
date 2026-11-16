@@ -2,7 +2,7 @@ import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { isNonEmptyString } from '@sniptt/guards';
 import { useStore } from 'jotai';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { StandardObjectNameSingular } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
@@ -17,13 +17,16 @@ import { useStartAppChannelConversation } from '@/activities/emails/hooks/useSta
 import { SIDE_PANEL_FOCUS_ID } from '@/side-panel/constants/SidePanelFocusId';
 import { useOpenRecordInSidePanel } from '@/side-panel/hooks/useOpenRecordInSidePanel';
 import { useSidePanelHistory } from '@/side-panel/hooks/useSidePanelHistory';
+import { startAppConversationIdempotencyKeyComponentState } from '@/side-panel/pages/start-app-conversation/states/startAppConversationIdempotencyKeyComponentState';
 import { startAppConversationTargetComponentState } from '@/side-panel/pages/start-app-conversation/states/startAppConversationTargetComponentState';
+import { startAppConversationTextComponentState } from '@/side-panel/pages/start-app-conversation/states/startAppConversationTextComponentState';
 import { SidePanelPageComponentInstanceContext } from '@/side-panel/states/contexts/SidePanelPageComponentInstanceContext';
 import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
 import { sidePanelNavigationStackState } from '@/side-panel/states/sidePanelNavigationStackState';
 import { SidePanelFooter } from '@/ui/layout/side-panel/components/SidePanelFooter';
 import { useHotkeysOnFocusedElement } from '@/ui/utilities/hotkey/hooks/useHotkeysOnFocusedElement';
 import { useAvailableComponentInstanceIdOrThrow } from '@/ui/utilities/state/component-state/hooks/useAvailableComponentInstanceIdOrThrow';
+import { useAtomComponentState } from '@/ui/utilities/state/jotai/hooks/useAtomComponentState';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 
 const StyledContainer = styled.div`
@@ -76,22 +79,30 @@ export const SidePanelStartAppConversationPage = () => {
   const { enqueueToast } = useToast();
   const { startAppChannelConversation, loading } =
     useStartAppChannelConversation();
-  const [text, setText] = useState('');
-  const [idempotencyKey] = useState(() => v4());
+  const [startAppConversationText, setStartAppConversationText] =
+    useAtomComponentState(startAppConversationTextComponentState);
+  const [
+    startAppConversationIdempotencyKey,
+    setStartAppConversationIdempotencyKey,
+  ] = useAtomComponentState(startAppConversationIdempotencyKeyComponentState);
 
-  const canSend = isNonEmptyString(text.trim()) && !loading;
+  const canSend = isNonEmptyString(startAppConversationText.trim()) && !loading;
 
   const handleSend = useCallback(async () => {
     if (!isDefined(startAppConversationTarget) || !canSend) {
       return;
     }
 
+    const sendIdempotencyKey = startAppConversationIdempotencyKey ?? v4();
+
+    setStartAppConversationIdempotencyKey(sendIdempotencyKey);
+
     try {
       const messageThreadId = await startAppChannelConversation({
         messageChannelId: startAppConversationTarget.messageChannelId,
         personId: startAppConversationTarget.personId,
-        text: text.trim(),
-        idempotencyKey,
+        text: startAppConversationText.trim(),
+        idempotencyKey: sendIdempotencyKey,
       });
 
       const isComposerStillActive =
@@ -124,8 +135,9 @@ export const SidePanelStartAppConversationPage = () => {
     startAppConversationTarget,
     canSend,
     startAppChannelConversation,
-    text,
-    idempotencyKey,
+    startAppConversationText,
+    startAppConversationIdempotencyKey,
+    setStartAppConversationIdempotencyKey,
     store,
     sidePanelPageId,
     goBackFromSidePanel,
@@ -155,9 +167,9 @@ export const SidePanelStartAppConversationPage = () => {
           aria-label={t`Message`}
           placeholder={t`Write a message`}
           minRows={4}
-          value={text}
+          value={startAppConversationText}
           disabled={loading}
-          onChange={(event) => setText(event.target.value)}
+          onChange={(event) => setStartAppConversationText(event.target.value)}
         />
       </StyledContent>
       <SidePanelFooter

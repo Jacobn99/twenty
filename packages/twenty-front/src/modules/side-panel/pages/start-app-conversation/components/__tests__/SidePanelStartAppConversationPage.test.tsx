@@ -145,6 +145,31 @@ describe('SidePanelStartAppConversationPage', () => {
     expect(secondCall[0].idempotencyKey).toBe(firstCall[0].idempotencyKey);
   });
 
+  it('keeps the draft and its idempotency key when the user comes back to the composer', async () => {
+    const user = userEvent.setup();
+
+    startAppChannelConversation.mockRejectedValueOnce(new Error('failed'));
+    startAppChannelConversation.mockResolvedValueOnce('thread-1');
+
+    const { unmount } = render(<SidePanelStartAppConversationPage />, {
+      wrapper: Wrapper,
+    });
+
+    await user.type(screen.getByRole('textbox', { name: 'Message' }), 'Hi');
+    await user.click(screen.getByRole('button', { name: /Send/ }));
+    unmount();
+
+    render(<SidePanelStartAppConversationPage />, { wrapper: Wrapper });
+
+    expect(screen.getByRole('textbox', { name: 'Message' })).toHaveValue('Hi');
+
+    await user.click(screen.getByRole('button', { name: /Send/ }));
+
+    const [firstCall, secondCall] = startAppChannelConversation.mock.calls;
+
+    expect(secondCall[0].idempotencyKey).toBe(firstCall[0].idempotencyKey);
+  });
+
   it('leaves the side panel alone when the user moved on before the send finished', async () => {
     const user = userEvent.setup();
 
