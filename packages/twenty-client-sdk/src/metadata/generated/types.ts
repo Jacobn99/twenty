@@ -1213,7 +1213,7 @@ export default {
             "requestedIframeMediaPermissions": [
                 326
             ],
-            "runOnUserPreferences": [
+            "runHealthCheckOnUserPreferences": [
                 1
             ],
             "settingsCustomTabFrontComponentId": [
@@ -1828,9 +1828,6 @@ export default {
             ],
             "connectionProviders": [
                 62
-            ],
-            "hasUserHealthCheck": [
-                1
             ],
             "settingsMenuItems": [
                 522
