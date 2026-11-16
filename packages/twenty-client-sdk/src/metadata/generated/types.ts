@@ -4034,6 +4034,9 @@ export default {
             "pageLayoutId": [
                 566
             ],
+            "parentId": [
+                564
+            ],
             "position": [
                 8
             ],
@@ -10146,19 +10149,6 @@ export default {
                     ]
                 }
             ],
-            "upgradeApplication": [
-                1,
-                {
-                    "appRegistrationId": [
-                        4,
-                        "String!"
-                    ],
-                    "targetVersion": [
-                        4,
-                        "String!"
-                    ]
-                }
-            ],
             "uploadAppTarball": [
                 86,
                 {
@@ -10404,6 +10394,9 @@ export default {
             ],
             "pageLayoutId": [
                 566
+            ],
+            "parentId": [
+                564
             ],
             "position": [
                 8
@@ -14902,6 +14895,9 @@ export default {
             ],
             "pageLayoutId": [
                 566
+            ],
+            "parentId": [
+                564
             ],
             "position": [
                 8
