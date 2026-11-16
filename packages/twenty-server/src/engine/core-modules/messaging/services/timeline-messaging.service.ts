@@ -218,27 +218,22 @@ export class TimelineMessagingService {
     ownedMessageChannelIds: string[];
     subjectVisibleMessageChannelIds: string[];
   }> {
-    const [ownedConnectedAccounts, messageChannels] = await Promise.all([
-      this.connectedAccountRepository.find({
-        where: { userWorkspaceId, workspaceId },
-        select: { id: true },
-      }),
+    const [ownedMessageChannelIdList, messageChannels] = await Promise.all([
+      this.findOwnedMessageChannelIds({ userWorkspaceId, workspaceId }),
       this.messageChannelRepository.find({
         where: { workspaceId },
-        select: { id: true, visibility: true, connectedAccountId: true },
+        select: { id: true, visibility: true },
       }),
     ]);
 
-    const ownedConnectedAccountIds = new Set(
-      ownedConnectedAccounts.map((connectedAccount) => connectedAccount.id),
-    );
+    const ownedMessageChannelIdSet = new Set(ownedMessageChannelIdList);
 
     const ownedMessageChannelIds: string[] = [];
     const subjectVisibleMessageChannelIds: string[] = [];
 
     for (const messageChannel of messageChannels) {
-      const isOwnedByCurrentUser = ownedConnectedAccountIds.has(
-        messageChannel.connectedAccountId,
+      const isOwnedByCurrentUser = ownedMessageChannelIdSet.has(
+        messageChannel.id,
       );
       const visibility = getEffectiveMessageChannelVisibility({
         visibility: messageChannel.visibility,
