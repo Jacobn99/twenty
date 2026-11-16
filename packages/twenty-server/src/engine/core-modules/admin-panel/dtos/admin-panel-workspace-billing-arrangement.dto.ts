@@ -51,6 +51,9 @@ export class AdminPanelWorkspaceBillingArrangementDTO {
   @Field(() => BillingArrangementStatus)
   status: BillingArrangementStatus;
 
+  @Field(() => Boolean)
+  isManageable: boolean;
+
   @Field(() => UserInfoDTO, { nullable: true })
   grantedBy: UserInfoDTO | null;
 

@@ -20,6 +20,7 @@ export const WORKSPACE_BILLING_ARRANGEMENTS = gql`
       startsAt
       endDate
       status
+      isManageable
       grantedBy {
         ...UserInfoFragment
       }
