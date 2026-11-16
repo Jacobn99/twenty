@@ -1,6 +1,7 @@
 import { isNonEmptyString } from '@sniptt/guards';
 import { defineLogicFunction } from 'twenty-sdk/define';
 import { getConnection } from 'twenty-sdk/logic-function';
+import { isDefined } from 'twenty-sdk/utils';
 
 import { LINKEDIN_START_CONVERSATION_UNIVERSAL_IDENTIFIER } from 'src/constants/universal-identifiers';
 import { buildLinkedinProfileHandle } from 'src/logic-functions/utils/build-linkedin-profile-handle.util';
@@ -42,7 +43,7 @@ export const linkedinStartConversationHandler = async ({
 }: StartAppConversationPayload): Promise<StartAppConversationResult> => {
   const [recipient] = recipients;
 
-  if (recipients.length !== 1 || recipient === undefined) {
+  if (recipients.length !== 1 || !isDefined(recipient)) {
     throw new Error(
       'A LinkedIn conversation can only be started with one person',
     );
@@ -59,7 +60,7 @@ export const linkedinStartConversationHandler = async ({
 
   const profileIdentifier = await resolveProfileIdentifier(recipient);
 
-  if (profileIdentifier === null) {
+  if (!isDefined(profileIdentifier)) {
     throw new Error(
       `Person ${recipient.personId} has no LinkedIn profile URL: add one to start a LinkedIn conversation`,
     );
