@@ -20,6 +20,7 @@ LinkedIn accounts are connected through [Unipile](https://www.unipile.com) (API 
      ```
 
    - **Events**: `message.new`, `chat.update`, `account.status.disconnected`, `account.status.errored`
+     Upgrading an existing install: add `chat.update` to the existing webhook, otherwise chats read on LinkedIn are not marked read in Twenty.
    - **Accounts**: leave empty so every connected account is covered, including future ones.
 
 ## 2. Configure Twenty
