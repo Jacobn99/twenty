@@ -707,6 +707,17 @@ export class ApplicationMessageSendService {
     text: string;
     deliveryKey: string;
   }): Promise<AppMessageDelivery> {
+    const unrecordableDeliveryKey = `${deliveryKey}:unrecordable`;
+    const unrecordableDeliveryMessage =
+      await this.cacheStorageService.get<string>(unrecordableDeliveryKey);
+
+    if (isDefined(unrecordableDeliveryMessage)) {
+      throw new MessagingProviderException(
+        unrecordableDeliveryMessage,
+        MessagingProviderExceptionCode.SEND_MESSAGE_FAILED,
+      );
+    }
+
     const conversationStarter =
       await this.messagingProviderMessageSenderService.resolveConversationStarterOrThrow(
         {
@@ -746,8 +757,17 @@ export class ApplicationMessageSendService {
       )?.handle ?? recipient.handle;
 
     if (!isNonEmptyString(handle)) {
+      const message = `startConversation logic function of messaging provider ${conversationStarter.messagingProvider.id} returned no handle for person ${personId}`;
+
+      // the provider already sent it, so a retry with the same key must not send it again
+      await this.cacheStorageService.set(
+        unrecordableDeliveryKey,
+        message,
+        APP_MESSAGE_DELIVERY_TTL_MS,
+      );
+
       throw new MessagingProviderException(
-        `startConversation logic function of messaging provider ${conversationStarter.messagingProvider.id} returned no handle for person ${personId}`,
+        message,
         MessagingProviderExceptionCode.SEND_MESSAGE_FAILED,
       );
     }
