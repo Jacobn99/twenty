@@ -11,7 +11,6 @@ type UnipileWebhookEventEnvelope = {
 export type UnipileWebhookEvent = UnipileWebhookEventEnvelope &
   (
     | { type: 'message.new'; payload: UnipileMessage }
-    | { type: 'chat.update'; payload: { id?: string; chat_id?: string } }
     | {
         type: 'account.status.disconnected' | 'account.status.errored';
         payload: unknown;

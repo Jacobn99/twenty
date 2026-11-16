@@ -11,7 +11,6 @@ const mocks = vi.hoisted(() => ({
   getUnipileChat: vi.fn(),
   ingestLinkedinMessages: vi.fn(),
   setLinkedinAccountOwnerAvatar: vi.fn(),
-  refreshLinkedinChatReadState: vi.fn(),
 }));
 
 vi.mock('twenty-sdk/define', () => ({
@@ -43,13 +42,6 @@ vi.mock('src/unipile/utils/get-unipile-chat.util', () => ({
 vi.mock('src/logic-functions/utils/ingest-linkedin-messages.util', () => ({
   ingestLinkedinMessages: mocks.ingestLinkedinMessages,
 }));
-
-vi.mock(
-  'src/logic-functions/utils/refresh-linkedin-chat-read-state.util',
-  () => ({
-    refreshLinkedinChatReadState: mocks.refreshLinkedinChatReadState,
-  }),
-);
 
 vi.mock(
   'src/logic-functions/utils/set-linkedin-account-owner-avatar.util',
@@ -157,11 +149,6 @@ describe('linkedinImportHistoryHandler', () => {
     expect(mocks.getUnipileChat).toHaveBeenCalledExactlyOnceWith({
       accountId: 'acc_1',
       chatId: 'chat-2',
-    });
-    expect(mocks.refreshLinkedinChatReadState).toHaveBeenCalledExactlyOnceWith({
-      unipileAccountId: 'acc_1',
-      messageChannelId: 'channel-id',
-      chatId: LISTED_CHAT_WITH_ATTENDEE.id,
     });
     expect(mocks.ingestLinkedinMessages).toHaveBeenCalledWith(
       expect.objectContaining({
